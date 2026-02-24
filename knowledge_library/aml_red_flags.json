@@ -1,0 +1,559 @@
+[
+  {
+    "id": "RF001",
+    "typology": "money_mule",
+    "indicator": "Young account holder receiving frequent e-transfers from multiple sources",
+    "description": "Students or young adults acting as money mules receive numerous incoming e-transfers from unrelated senders, then rapidly move funds out. FINTRAC identifies unrelated parties sending email money transfers to the same beneficiary as a key ML indicator.",
+    "severity": "HIGH",
+    "customer_type": ["individual"],
+    "data_signals": ["is_young_adult == 1 or is_minor == 1", "emt_credit_count > 30", "is_student == 1"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 10: Use of Third Parties"
+      },
+      {
+        "title": "FINTRAC Operational Alert: Laundering Proceeds of Crime Through Underground Banking",
+        "url": "https://fintrac-canafe.canada.ca/intel/operation/ml-rec-eng",
+        "date": "2023"
+      }
+    ]
+  },
+  {
+    "id": "RF002",
+    "typology": "money_mule",
+    "indicator": "Student or unemployed individual with high transaction volume inconsistent with profile",
+    "description": "Individuals with occupations such as student, homemaker, or unemployed used as money mules or straw buyers. FINTRAC's Project Athena identifies these occupations as commonly exploited in underground banking schemes.",
+    "severity": "HIGH",
+    "customer_type": ["individual"],
+    "data_signals": ["is_student == 1 or is_unemployed == 1", "total_transaction_count > 50", "transaction_to_income_ratio > 10"],
+    "sources": [
+      {
+        "title": "FINTRAC Operational Alert: Laundering Proceeds of Crime Through Underground Banking",
+        "url": "https://fintrac-canafe.canada.ca/intel/operation/ml-rec-eng",
+        "date": "2023"
+      },
+      {
+        "title": "FATF Report: Professional Money Laundering",
+        "url": "https://www.fatf-gafi.org/en/publications/Methodsandtrends/Professional-money-laundering.html",
+        "date": "2018"
+      }
+    ]
+  },
+  {
+    "id": "RF003",
+    "typology": "money_mule",
+    "indicator": "Account with rapid pass-through activity across multiple channels",
+    "description": "Funds deposited and immediately withdrawn or transferred out, often across different channels. FINTRAC flags quick in-and-out fund movement as a core ML indicator.",
+    "severity": "HIGH",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["overall_credit_ratio > 0.8 or overall_credit_ratio < 0.2", "num_active_channels >= 4", "total_transaction_count > 50"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 6: Atypical Transactional Activity"
+      }
+    ]
+  },
+  {
+    "id": "RF004",
+    "typology": "structuring",
+    "indicator": "Multiple transactions just below $10,000 CAD reporting threshold",
+    "description": "Structuring (smurfing) involves deliberately splitting transactions to stay below the $10,000 CAD large cash transaction reporting threshold under PCMLTFA. FINTRAC dedicates an entire indicator category to this behaviour.",
+    "severity": "HIGH",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["total_near_10k > 3", "overall_near_10k_ratio > 0.05"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 7: Structuring Below Reporting Thresholds"
+      },
+      {
+        "title": "FINTRAC Reporting Large Cash Transactions",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/lctr-doie/lctr-doie-eng"
+      }
+    ]
+  },
+  {
+    "id": "RF005",
+    "typology": "structuring",
+    "indicator": "High proportion of round-amount transactions suggesting deliberate structuring",
+    "description": "Frequent round-figure transactions (multiples of $100) can indicate structured payments designed to obscure the source of funds. FINTRAC and FATF note that payments in round figures are a red flag for professional money laundering.",
+    "severity": "MEDIUM",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["overall_round_ratio > 0.5", "total_round_count > 10"],
+    "sources": [
+      {
+        "title": "FINTRAC Operational Alert: Professional Money Laundering Through Trade and MSBs",
+        "url": "https://fintrac-canafe.canada.ca/intel/operation/oai-ml-eng",
+        "date": "2018"
+      }
+    ]
+  },
+  {
+    "id": "RF006",
+    "typology": "structuring",
+    "indicator": "Near-threshold transactions spread across multiple channels",
+    "description": "Structuring activity distributed across ABM, EFT, EMT and other channels to further avoid detection. Cross-channel structuring is harder to detect and indicates greater sophistication.",
+    "severity": "HIGH",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["total_near_10k > 2", "num_active_channels >= 3"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 7: Structuring Below Reporting Thresholds"
+      },
+      {
+        "title": "FINTRAC Reporting Transactions: The 24-Hour Rule",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/24hour/1-eng"
+      }
+    ]
+  },
+  {
+    "id": "RF007",
+    "typology": "shell_company",
+    "indicator": "Holding company with zero sales and minimal employees",
+    "description": "Shell entities lacking economic reason to exist are a core ML vehicle. FATF's study of 100+ cases found that shell companies used for laundering typically have no employees, transit-only transactions, and P.O. box addresses.",
+    "severity": "HIGH",
+    "customer_type": ["small_business"],
+    "data_signals": ["industry_is_holding == 1", "zero_sales == 1 or sales_missing == 1", "zero_employees == 1 or employee_count_missing == 1"],
+    "sources": [
+      {
+        "title": "FATF/Egmont Group: Concealment of Beneficial Ownership",
+        "url": "https://www.fatf-gafi.org/en/publications/Methodsandtrends/Concealment-beneficial-ownership.html",
+        "date": "2018"
+      },
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 6: Atypical Transactional Activity"
+      }
+    ]
+  },
+  {
+    "id": "RF008",
+    "typology": "shell_company",
+    "indicator": "Newly established business with disproportionately high transaction volume",
+    "description": "A recently incorporated business showing immediate high transaction volumes is suspicious. Legitimate new businesses typically ramp up gradually. FINTRAC flags sudden changes in financial profile and activity inconsistent with business age.",
+    "severity": "HIGH",
+    "customer_type": ["small_business"],
+    "data_signals": ["is_newly_established == 1", "total_transaction_count > 100", "total_amount_all > 50000"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 5: Changes in Account Activity"
+      },
+      {
+        "title": "FATF/Egmont Group: Concealment of Beneficial Ownership",
+        "url": "https://www.fatf-gafi.org/en/publications/Methodsandtrends/Concealment-beneficial-ownership.html",
+        "date": "2018"
+      }
+    ]
+  },
+  {
+    "id": "RF009",
+    "typology": "shell_company",
+    "indicator": "Business with zero sales acting as pass-through for fund transfers",
+    "description": "Entities with no declared revenue that facilitate pass-through transactions, with funds flowing in and out in short periods. FATF identifies transit-only transactions with no wealth generation as a key shell company indicator.",
+    "severity": "HIGH",
+    "customer_type": ["small_business"],
+    "data_signals": ["zero_sales == 1", "total_amount_all > 10000", "overall_credit_ratio between 0.4 and 0.6"],
+    "sources": [
+      {
+        "title": "FATF/Egmont Group: Concealment of Beneficial Ownership",
+        "url": "https://www.fatf-gafi.org/en/publications/Methodsandtrends/Concealment-beneficial-ownership.html",
+        "date": "2018"
+      }
+    ]
+  },
+  {
+    "id": "RF010",
+    "typology": "layering",
+    "indicator": "Funds rapidly moved across multiple channels within short timeframes",
+    "description": "Layering involves moving funds through multiple channels (ABM, EFT, EMT, wire, card) to obscure the audit trail. High channel diversity combined with high transaction volume indicates deliberate obfuscation.",
+    "severity": "HIGH",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["num_active_channels >= 5", "channel_hhi < 0.3", "total_transaction_count > 50"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 6: Atypical Transactional Activity"
+      },
+      {
+        "title": "2025 Assessment of Money Laundering and Terrorist Financing Risks in Canada",
+        "url": "https://www.canada.ca/en/department-finance/programs/financial-sector-policy/nira-neri/2025/report.html",
+        "date": "2025"
+      }
+    ]
+  },
+  {
+    "id": "RF011",
+    "typology": "layering",
+    "indicator": "Burst transaction activity suggesting coordinated fund movements",
+    "description": "Unusually high transaction counts on specific days compared to the customer's average, suggesting coordinated or rushed fund movements. FINTRAC identifies complicated series of fund transfers designed to obscure source and use.",
+    "severity": "MEDIUM",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["burst_score > 5 in any channel"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 6: Atypical Transactional Activity"
+      }
+    ]
+  },
+  {
+    "id": "RF012",
+    "typology": "layering",
+    "indicator": "Large incoming wire or Western Union transfers followed by outflows through other channels",
+    "description": "International wire transfers or remittances received and then distributed through domestic channels such as EFT, EMT or card. FINTRAC flags funds deposited to multiple accounts then consolidated or transferred overseas.",
+    "severity": "HIGH",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["wire_transaction_count > 0 or westernunion_transaction_count > 0", "num_active_channels >= 3", "wire_total_credit_amount > 5000 or westernunion_total_credit_amount > 5000"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 8: Wire Transfers / Electronic Funds Transfers"
+      },
+      {
+        "title": "FINTRAC Operational Alert: Laundering Proceeds of Crime Through Underground Banking",
+        "url": "https://fintrac-canafe.canada.ca/intel/operation/ml-rec-eng",
+        "date": "2023"
+      }
+    ]
+  },
+  {
+    "id": "RF013",
+    "typology": "income_mismatch",
+    "indicator": "Transaction volume grossly exceeding declared income",
+    "description": "Total transaction amounts far exceeding the customer's declared income or sales. FINTRAC identifies transactional activity far exceeding projected activity and activity inconsistent with financial standing as primary ML indicators.",
+    "severity": "HIGH",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["transaction_to_income_ratio > 10"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 3: Financial Transactions vs. Profile"
+      }
+    ]
+  },
+  {
+    "id": "RF014",
+    "typology": "income_mismatch",
+    "indicator": "Minor receiving large wire transfers or e-transfers",
+    "description": "Individuals under 18 receiving significant fund transfers have no legitimate economic reason for such activity. Combined with student status and low/zero income, this is a strong indicator of being used as a money mule.",
+    "severity": "HIGH",
+    "customer_type": ["individual"],
+    "data_signals": ["is_minor == 1", "wire_total_credit_amount > 1000 or emt_total_credit_amount > 1000"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 3: Financial Transactions vs. Profile"
+      },
+      {
+        "title": "FINTRAC Operational Alert: Laundering Proceeds of Crime Through Underground Banking",
+        "url": "https://fintrac-canafe.canada.ca/intel/operation/ml-rec-eng",
+        "date": "2023"
+      }
+    ]
+  },
+  {
+    "id": "RF015",
+    "typology": "income_mismatch",
+    "indicator": "New customer with immediately high transaction activity",
+    "description": "An abrupt onset of high-volume activity from a recently onboarded customer. FINTRAC specifically flags sudden changes in financial profile and inactive accounts showing sudden activity.",
+    "severity": "MEDIUM",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["transaction_to_income_ratio > 5", "is_new_customer == 1"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 5: Changes in Account Activity"
+      }
+    ]
+  },
+  {
+    "id": "RF016",
+    "typology": "income_mismatch",
+    "indicator": "Net flow significantly disproportionate to declared income",
+    "description": "The absolute net flow of funds (credits minus debits) far exceeds the customer's declared income, suggesting the account is being used to receive or send funds not generated by the customer's own economic activity.",
+    "severity": "HIGH",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["net_flow_to_income_ratio > 10"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 3: Financial Transactions vs. Profile"
+      }
+    ]
+  },
+  {
+    "id": "RF017",
+    "typology": "cash_intensive",
+    "indicator": "Frequent large cash transactions at ABMs",
+    "description": "High volumes of cash deposits or withdrawals at ATMs/ABMs, especially in varied locations. FINTRAC flags large structured cash deposits at multiple locations on the same day.",
+    "severity": "HIGH",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["abm_cash_count > 20", "abm_cash_ratio > 0.5", "abm_total_amount > 10000"],
+    "sources": [
+      {
+        "title": "FINTRAC Operational Alert: Professional Money Laundering Through Trade and MSBs",
+        "url": "https://fintrac-canafe.canada.ca/intel/operation/oai-ml-eng",
+        "date": "2018"
+      },
+      {
+        "title": "FINTRAC Reporting Large Cash Transactions",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/lctr-doie/lctr-doie-eng"
+      }
+    ]
+  },
+  {
+    "id": "RF018",
+    "typology": "cash_intensive",
+    "indicator": "ABM transactions at foreign locations inconsistent with customer profile",
+    "description": "Use of ABMs in foreign countries by customers whose profile does not suggest international travel. FINTRAC flags transactions with foreign jurisdictions inconsistent with the customer's financial profile.",
+    "severity": "MEDIUM",
+    "customer_type": ["individual"],
+    "data_signals": ["abm_foreign_ratio > 0.3", "is_student == 1 or is_unemployed == 1"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 9: Non-Canadian Jurisdictions"
+      }
+    ]
+  },
+  {
+    "id": "RF019",
+    "typology": "high_risk_industry",
+    "indicator": "Holding company or investment vehicle with opaque ownership",
+    "description": "Holding companies are frequently used to conceal beneficial ownership and layer illicit funds through legitimate corporate structures. CISC reports that shell companies and nominees are among the most common ML methods used by organized crime groups in Canada.",
+    "severity": "HIGH",
+    "customer_type": ["small_business"],
+    "data_signals": ["industry_is_holding == 1"],
+    "sources": [
+      {
+        "title": "CISC 2024 Public Report on Organized Crime",
+        "url": "https://cisc-scrc.gc.ca/media/2024/2024-12-03-eng.htm",
+        "date": "2024"
+      },
+      {
+        "title": "FATF: Transparency and Beneficial Ownership",
+        "url": "https://www.fatf-gafi.org/content/dam/fatf/documents/reports/Guidance-transparency-beneficial-ownership.pdf",
+        "date": "2014"
+      }
+    ]
+  },
+  {
+    "id": "RF020",
+    "typology": "high_risk_industry",
+    "indicator": "Real estate business with activity patterns consistent with laundering",
+    "description": "The real estate sector is highly vulnerable to money laundering per the Cullen Commission. Billions of dollars are estimated to be laundered annually through BC real estate. Real estate businesses with unusual transaction patterns warrant heightened scrutiny.",
+    "severity": "HIGH",
+    "customer_type": ["small_business"],
+    "data_signals": ["industry_is_real_estate == 1", "total_amount_all > 50000"],
+    "sources": [
+      {
+        "title": "Cullen Commission: Final Report of the Commission of Inquiry into Money Laundering in BC",
+        "url": "https://cullencommission.ca/files/reports/CullenCommission-FinalReport-Full.pdf",
+        "date": "2022"
+      },
+      {
+        "title": "FINTRAC Operational Brief: Indicators of Money Laundering in Real Estate",
+        "url": "https://fintrac-canafe.canada.ca/intel/operation/real-eng",
+        "date": "2016"
+      }
+    ]
+  },
+  {
+    "id": "RF021",
+    "typology": "high_risk_industry",
+    "indicator": "Legal services firm with unusual fund flows",
+    "description": "Legal professionals are sought by criminals because they are required to complete certain transactions and their specialized skills can assist in laundering. FATF documented over 100 case studies of ML involving lawyers.",
+    "severity": "MEDIUM",
+    "customer_type": ["small_business"],
+    "data_signals": ["industry_is_legal == 1", "total_amount_all > 20000"],
+    "sources": [
+      {
+        "title": "FATF: ML/TF Vulnerabilities of Legal Professionals",
+        "url": "https://www.fatf-gafi.org/en/publications/Methodsandtrends/Mltf-vulnerabilities-legal-professionals.html",
+        "date": "2013"
+      }
+    ]
+  },
+  {
+    "id": "RF022",
+    "typology": "high_risk_industry",
+    "indicator": "Financial services or MSB business with high cash or transfer volumes",
+    "description": "Money services businesses and financial intermediaries are commonly exploited by professional money launderers. FINTRAC's operational alert on professional ML specifically highlights MSB owner/employee red flags.",
+    "severity": "HIGH",
+    "customer_type": ["small_business"],
+    "data_signals": ["industry_is_financial == 1 or industry_is_msb == 1", "total_amount_all > 50000"],
+    "sources": [
+      {
+        "title": "FINTRAC Operational Alert: Professional Money Laundering Through Trade and MSBs",
+        "url": "https://fintrac-canafe.canada.ca/intel/operation/oai-ml-eng",
+        "date": "2018"
+      }
+    ]
+  },
+  {
+    "id": "RF023",
+    "typology": "organized_crime",
+    "indicator": "Pattern combining multiple ML typology indicators simultaneously",
+    "description": "Organized crime groups typically employ multiple laundering methods simultaneously. CISC reports that 69% of organized crime groups operate across 2+ criminal markets. Customers triggering indicators across multiple typologies are at elevated risk.",
+    "severity": "HIGH",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["triggers 3+ different typology categories"],
+    "sources": [
+      {
+        "title": "CISC 2024 Public Report on Organized Crime",
+        "url": "https://cisc-scrc.gc.ca/media/2024/2024-12-03-eng.htm",
+        "date": "2024"
+      },
+      {
+        "title": "2025 Assessment of Money Laundering and Terrorist Financing Risks in Canada",
+        "url": "https://www.canada.ca/en/department-finance/programs/financial-sector-policy/nira-neri/2025/report.html",
+        "date": "2025"
+      }
+    ]
+  },
+  {
+    "id": "RF024",
+    "typology": "organized_crime",
+    "indicator": "Underground banking patterns: large incoming transfers with rapid disbursement",
+    "description": "The Vancouver Model identified by the Cullen Commission involves cash facilitators providing advances repaid via cross-border transfers through underground banking systems. FINTRAC's Project Athena describes account activity showing rapid in-and-out flows inconsistent with stated occupation.",
+    "severity": "HIGH",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["wire_total_credit_amount > 10000 or eft_total_credit_amount > 10000", "overall_credit_ratio between 0.4 and 0.6", "num_active_channels >= 3"],
+    "sources": [
+      {
+        "title": "Cullen Commission: Final Report",
+        "url": "https://cullencommission.ca/files/reports/CullenCommission-FinalReport-Full.pdf",
+        "date": "2022"
+      },
+      {
+        "title": "FINTRAC Operational Alert: Laundering Proceeds of Crime Through Underground Banking",
+        "url": "https://fintrac-canafe.canada.ca/intel/operation/ml-rec-eng",
+        "date": "2023"
+      }
+    ]
+  },
+  {
+    "id": "RF025",
+    "typology": "organized_crime",
+    "indicator": "Drug trafficking proceeds laundered through high-volume cash and EMT activity",
+    "description": "Drug trafficking is the predicate offence in 72.4% of Canadian ML cases per RCMP analysis. Illicit synthetic opioid proceeds are laundered via cash smurfing, flow-through accounts, and EMTs sent to gambling sites. FINTRAC's Project Guardian identified this as an escalating threat.",
+    "severity": "HIGH",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["abm_cash_count > 10", "emt_transaction_count > 30", "total_near_10k > 2"],
+    "sources": [
+      {
+        "title": "FINTRAC Operational Alert: Laundering Proceeds of Illicit Synthetic Opioids",
+        "url": "https://fintrac-canafe.canada.ca/intel/operation/iso-osi-eng.pdf",
+        "date": "2025"
+      },
+      {
+        "title": "Money Laundering in Canada: An Analysis of RCMP Cases (Stephen Schneider)",
+        "url": "https://ag-pssg-sharedservices-ex.objectstore.gov.bc.ca/ag-pssg-cc-exh-prod-bkt-ex/7%20-%20Money%20Laundering%20in%20Canada%20An%20Analysis%20of%20RCMP%20Cases%20March%202014.pdf",
+        "date": "2014"
+      }
+    ]
+  },
+  {
+    "id": "RF026",
+    "typology": "organized_crime",
+    "indicator": "Front company in high-risk sector with transaction patterns inconsistent with business type",
+    "description": "Organized crime groups use front companies in accommodations/food services, retail, transportation, construction, and other services to launder proceeds. CISC reports these sectors represent 64% of businesses linked to OCG illicit activity.",
+    "severity": "HIGH",
+    "customer_type": ["small_business"],
+    "data_signals": ["industry_is_other == 1 or industry_is_holding == 1", "transaction_to_income_ratio > 5", "zero_sales == 1 or sales_missing == 1"],
+    "sources": [
+      {
+        "title": "CISC 2024 Public Report on Organized Crime",
+        "url": "https://cisc-scrc.gc.ca/media/2024/2024-12-03-eng.htm",
+        "date": "2024"
+      }
+    ]
+  },
+  {
+    "id": "RF027",
+    "typology": "cash_intensive",
+    "indicator": "Excessive EMTs followed by cash withdrawals",
+    "description": "Multiple incoming email money transfers rapidly converted to cash via ABM withdrawals. FINTRAC identifies this specific pattern in both terrorist financing and drug proceeds laundering contexts.",
+    "severity": "HIGH",
+    "customer_type": ["individual"],
+    "data_signals": ["emt_credit_count > 20", "abm_debit_count > 10", "abm_cash_count > 5"],
+    "sources": [
+      {
+        "title": "FINTRAC Operational Alert: Terrorist Activity Financing",
+        "url": "https://fintrac-canafe.canada.ca/intel/operation/taf-eng",
+        "date": "2022"
+      },
+      {
+        "title": "FINTRAC Operational Alert: Laundering Proceeds of Illicit Cannabis",
+        "url": "https://fintrac-canafe.canada.ca/intel/operation/cannabis-eng",
+        "date": "2022"
+      }
+    ]
+  },
+  {
+    "id": "RF028",
+    "typology": "income_mismatch",
+    "indicator": "Business with missing or zero employee count showing high transaction volumes",
+    "description": "A business reporting no employees yet processing significant transaction volumes may be a shell entity or front company. FATF identifies entities with no personnel as a primary indicator of concealed beneficial ownership.",
+    "severity": "MEDIUM",
+    "customer_type": ["small_business"],
+    "data_signals": ["zero_employees == 1 or employee_count_missing == 1", "total_transaction_count > 30"],
+    "sources": [
+      {
+        "title": "FATF/Egmont Group: Concealment of Beneficial Ownership",
+        "url": "https://www.fatf-gafi.org/en/publications/Methodsandtrends/Concealment-beneficial-ownership.html",
+        "date": "2018"
+      }
+    ]
+  },
+  {
+    "id": "RF029",
+    "typology": "layering",
+    "indicator": "High-value card transactions with high foreign or e-commerce ratio",
+    "description": "Unusually high volumes of foreign or online card transactions can indicate use of compromised cards, online laundering, or purchases of goods for resale. Especially suspicious when combined with high transaction diversity across merchant categories.",
+    "severity": "MEDIUM",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["card_foreign_ratio > 0.3 or card_ecommerce_ratio > 0.7", "card_total_amount > 10000"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 4: Products and Services"
+      }
+    ]
+  },
+  {
+    "id": "RF030",
+    "typology": "layering",
+    "indicator": "Disproportionate weekend and nighttime transaction activity",
+    "description": "Disproportionate transaction activity during weekends and late night hours may indicate attempts to avoid branch staff scrutiny or automated monitoring during business hours.",
+    "severity": "LOW",
+    "customer_type": ["individual", "small_business"],
+    "data_signals": ["weekend_ratio > 0.5 in any channel", "night_ratio > 0.3 in any channel"],
+    "sources": [
+      {
+        "title": "FINTRAC ML/TF Indicators -- Financial Entities",
+        "url": "https://fintrac-canafe.canada.ca/guidance-directives/transaction-operation/indicators-indicateurs/fin_mltf-eng",
+        "section": "Category 2: Client Behaviour"
+      }
+    ]
+  }
+]
